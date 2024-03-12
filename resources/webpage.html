@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:,">
+    <style>
+    html {
+        font-family: Helvetica;
+        display: inline-block;
+        margin: 0px auto;
+        text-align: center;
+    }
+
+    .button {
+        background-color: #4CAF50;
+        border: none;
+        color: white;
+        padding: 16px 40px;
+        text-decoration: none;
+        font-size: 30px;
+        margin: 2px;
+        cursor: pointer;
+    }
+
+    .button2 {
+        background-color: #555555;
+    }
+    </style>
+</head>
+<script>
+var Socket;
+function init() {
+    Socket = new WebSocket('ws://' + window.location.hostname + ':3300/wpilibws');
+    Socket.onmessage = function(event) {
+        processCommand(event);
+    };
+}
+function processCommand(event) {
+    var obj = JSON.parse(event.data);
+    document.getElementById('deviceType').innerHTML = obj.type;  
+    console.log(obj.type);
+}
+window.onload = function(event) {
+    init();
+}
+</script>
+<body>
+    <h1>ESP32 Web Server</h1>
+    <p>Builtin LED - State off</p>
+    <p>
+        <a href="/26/on">
+            <button class="button">ON</button>
+        </a>
+    </p>
+    <p>
+        Device 
+        <span id='deviceType'></span>
+    </p>
+    <p>
+        Data
+        <span id='data'></span>
+    </p>
+
+
+    document.getElementById('axes0').innerHTML = obj.axes[0];
+    document.getElementById('axes1').innerHTML = obj.axes[1];
+    document.getElementById('axes2').innerHTML = obj.axes[2];
+    document.getElementById('axes3').innerHTML = obj.axes[3];
+
+
