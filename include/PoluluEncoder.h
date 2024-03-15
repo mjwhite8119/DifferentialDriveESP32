@@ -45,7 +45,7 @@ class PoluluEncoder
       printPort();Serial.println(" Encoder reset");
     }
 
-    bool encoderUpdated();
+    bool updated();
 
     int32_t IRAM_ATTR getTicks();
 

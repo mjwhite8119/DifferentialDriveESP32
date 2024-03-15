@@ -13,7 +13,7 @@
 #include "robot.h"
 // #include "imu.h"
 #include "wpilibws_processor.h"
-#include "config.h"
+// #include "config.h"
 #include "watchdog.h"
 
 // Resource strings
@@ -24,7 +24,7 @@ const unsigned char* GetResource_skeleton_css(size_t* len);
 const unsigned char* GetResource_xrp_js(size_t* len);
 }
 
-XRPConfiguration config;
+// XRPConfiguration config;
 
 wpilibws::WPILibWSProcessor wsMsgProcessor;
 
@@ -34,14 +34,13 @@ xrp::Robot robot;
 xrp::Watchdog dsWatchdog{"ds"};
 
 // Status Vars
-NetworkMode netConfigResult;
+// NetworkMode netConfigResult;
 
 // Chip Identifier
 char chipID[20];
 
 AsyncWebServer webServer(3300);
 WebSocketsServer webSocket = WebSocketsServer(3300, "/wpilibws");
-// WebSocketsServer webSocketBroadcast = WebSocketsServer(3300, "/wpilibws");
 
 // ===================================================
 // Handlers for INBOUND WS Messages
@@ -60,7 +59,6 @@ void onDSEnabledMessage(bool enabled) {
 }
 
 void onPWMMessage(int channel, double value) {
-  // Serial.print("Value ");Serial.println(value);
   robot.setPwmValue(channel, value);
 }
 
@@ -117,7 +115,6 @@ void setupWebServerRoutes() {
 
 void broadcast(std::string msg) {
   webSocket.broadcastTXT(msg.c_str());
-  // webSocketBroadcast.broadcastTXT(msg.c_str());
 }
 
 void onWebSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t length) {
@@ -177,10 +174,9 @@ void setup() {
   // webServer.addHook(wsServer.hookForWebserver("/wpilibws", onWebSocketEvent));
   webSocket.onEvent(onWebSocketEvent);
   webSocket.begin();
-  // webSocketBroadcast.begin();
   
   webServer.onNotFound(notFound);
-  // webServer.begin();
+  webServer.begin();
 
   Serial.println("HTTP Server started on port 3300");
   Serial.println("WebSocket server started on /wpilibws on port 3300");
@@ -198,20 +194,13 @@ void loop() {
 
   // webServer.handleClient();
   webSocket.loop();
-  // webSocketBroadcast.loop();
 
-  // auto activeEncoders = robot.getActiveEncoderDeviceIds();
-  // for (auto& encId : activeEncoders) {
-  //   int encVal = robot.getEncoderValueByDeviceId(encId);
-
-  //   // Send the WS message
-  //   auto jsonMsg = wsMsgProcessor.makeEncoderMessage(encId, encVal);
-  //   broadcast(jsonMsg);
-  // }
-
-  // Send the WS message
-  auto leftjsonMsg = wsMsgProcessor.makeEncoderMessage(0, robot._leftMotor.encoder.getTicks());
-  broadcast(leftjsonMsg);
+  // Send the WS messages
+  if (robot._leftMotor.encoder.updated()) {
+    auto leftjsonMsg = wsMsgProcessor.makeEncoderMessage(0, robot._leftMotor.encoder.getTicks());
+    broadcast(leftjsonMsg);
+  }
+  
   // auto rightjsonMsg = wsMsgProcessor.makeEncoderMessage(1, wsMsgProcessor.encoder_counts[1]);
   // broadcast(rightjsonMsg);
 

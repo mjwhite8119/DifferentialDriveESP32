@@ -55,10 +55,10 @@ void IRAM_ATTR PoluluEncoder::encoderBFired_() {
   portEXIT_CRITICAL_ISR(&timerMux);
 }
 
-bool PoluluEncoder::encoderUpdated() {
+bool PoluluEncoder::updated() {
   int32_t currentTicks = getTicks();
   if (currentTicks != lastTicks) {
-    lastTicks = getTicks();
+    lastTicks = currentTicks;
     return true;
   } else {
     return false;  

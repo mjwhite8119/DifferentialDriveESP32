@@ -69,21 +69,10 @@ static struct DRAM_ATTR PoluluMotorPins {
 static struct DRAM_ATTR MotorPins {
   const byte motorIN1; // motor IN1 pin1
   const byte motorIN2; // motor IN2 pin2
-} motorPinGroup[2] = {MOTOR1_IN1, MOTOR1_IN2
+} motorPinGroup[1] = {MOTOR2_IN1, MOTOR2_IN2
                       // MOTOR3_IN1, MOTOR3_IN2, ENCODER3_A, ENCODER3_B,
                       // MOTOR4_IN1, MOTOR4_IN2, ENCODER4_A, ENCODER4_B
                       };
-
-// Define wheel types 
-enum WheelTypes {
-  STANDARD_FIXED = 1,
-  STANDARD_FIXED_CONNECTED,
-  STANDARD_STEERABLE,
-  STANDARD_STEERABLE_CONNECTED,
-  CASTER,
-  SWEDISH,
-  SPRERIC
-};
 
 #define HELTEC_WIFI_KIT_32 true
 // -------------------------------------------------------//
