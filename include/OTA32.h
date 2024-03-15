@@ -171,9 +171,7 @@ inline void setupOTA()
   });
 
   ArduinoOTA.begin();
-  if (SCREEN_HEIGHT > 32) {
-    drawText(5, 0, "Started OTA");
-  } else {
-    drawText(5, 0, "Started OTA");
-  } 
+  
+  drawText(5, 0, "Started OTA");
+  
 }

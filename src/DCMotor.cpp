@@ -12,16 +12,16 @@ const int DRAM_ATTR periodsPerSec = 1000/speedCtrlPeriodMillis;    // number of 
 // -------------------Constructors -----------------------------------
 
 DCMotor::DCMotor(const uint8_t pinGroup) 
-  :encoder(pinGroup), pinGroup_(pinGroup)
+  :encoder(pinGroup), pinGroup_(pinGroup), PWMChannel(pinGroup)
 {   
   // Connect motor to GPIO pins
-  pinMode(motorPinGroup[pinGroup].motorDir1, OUTPUT); // motor direction
-  pinMode(motorPinGroup[pinGroup].motorDir2, OUTPUT); // motor direction
-  pinMode(motorPinGroup[pinGroup].enable, OUTPUT);
+  // pinMode(motorPinGroup[pinGroup].motorDir1, OUTPUT); // motor direction
+  // pinMode(motorPinGroup[pinGroup].motorDir2, OUTPUT); // motor direction
+  // pinMode(motorPinGroup[pinGroup].enable, OUTPUT);
 
-  // Setup PWM signal
-  ledcSetup(pinGroup_, freq, resolution); // create a PWM channel 
-  ledcAttachPin(motorPinGroup[pinGroup_].enable, pinGroup_); // attach channel to pin
+  // // Setup PWM signal
+  // ledcSetup(pinGroup_, freq, resolution); // create a PWM channel 
+  // ledcAttachPin(motorPinGroup[pinGroup_].enable, pinGroup_); // attach channel to pin
 
   // Start motor power timers 
   switch (pinGroup)
@@ -153,10 +153,18 @@ void IRAM_ATTR DCMotor::applyPower_(const int dir, const int PWM) {
     level = LOW; 
   }
 
-  digitalWrite(motorPinGroup[pinGroup_].motorDir2, level); // Direction HIGH forward, LOW backward
-  digitalWrite(motorPinGroup[pinGroup_].motorDir1, (!level)); // Write the opposite value
+  // digitalWrite(motorPinGroup[pinGroup_].motorDir2, level); // Direction HIGH forward, LOW backward
+  // digitalWrite(motorPinGroup[pinGroup_].motorDir1, (!level)); // Write the opposite value
   
-  // See setupPWM(pinGroup) in Config.h
-  ledcWrite(pinGroup_, abs(PWM));
+  // // See setupPWM(pinGroup) in Config.h
+  // ledcWrite(pinGroup_, abs(PWM));
 
+}
+
+// Simple function to run the motor
+void DCMotor::runMotor(const WheelSpeedProportion wheelSpeed) {
+  const int direction = sgn(wheelSpeed);
+  // Convert (-1.0, 1.0) to (0, 255)
+  int val = ((wheelSpeed + 1.0) / 2.0) * 255;
+  applyPower_(direction, val);
 }

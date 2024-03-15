@@ -4,10 +4,11 @@
 #ifndef Encoder
   #include "Encoder.h"
 #endif
+#include "PWMChannel.h"
 #include "Constants.h"
 #include <RobotTypes.h>
     
-class DCMotor
+class DCMotor : public xrp::PWMChannel
 {
   public:
         
@@ -34,6 +35,9 @@ class DCMotor
     // Mutex for protecting critical code in interrupts
     portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;
     
+    // Simple function to run the motor
+    void runMotor(const WheelSpeedProportion wheelSpeed);
+    
     // Set the wheel speed   
     void setSpeed(const EncoderPulsesPerSecond pulseSetpoint);
 
@@ -48,6 +52,9 @@ class DCMotor
     float getFeedforward() const {return (kS + (kV * wheelSpeedProportion_));}
 
     int getPulseSetpoint() const {return pulseSetpoint_;}
+
+    // Apply power to the motor
+    void IRAM_ATTR applyPower_(const int dir, const int PWM);
 
   private:
     
@@ -85,7 +92,7 @@ class DCMotor
     // Set motor power
     void IRAM_ATTR setPower_();
 
-    // Apply power to the motor
-    void IRAM_ATTR applyPower_(const int dir, const int PWM);
+    // // Apply power to the motor
+    // void IRAM_ATTR applyPower_(const int dir, const int PWM);
 };
 #endif // _DC_MOTOR_H_

@@ -111,22 +111,19 @@ namespace wpilibws {
     if (data.containsKey("<speed")) {
       // Speed values are [-1.0, 1.0]
       double value = atof(data["<speed"].as<std::string>().c_str());
-
-      // Test code
-      String jsonStringTxt;
-      serializeJson(pwmMsg, jsonStringTxt);
-      Serial.println(jsonStringTxt);
-      clearLine(4);
-      drawText(4, 0, data["<speed"]);
       // this->encoder_counts[channel] = this->encoder_counts[channel] + (value * 1000);
-
+      // String jsonStringTxt;
+      // serializeJson(pwmMsg, jsonStringTxt);
+      // Serial.println(jsonStringTxt);
+      // clearLine(4 + channel);
+      // drawText(4 + channel, 0, String(value));
       this->_pwmCallback(channel, value);
     }
     else if (data.containsKey("<position")) {
       // Position information is [0.0, 1.0]. We should convert to [-1.0, 1.0]
       double value = atof(data["<speed"].as<std::string>().c_str());
       value = (2.0 * value) - 1.0;
-      this->_pwmCallback(channel, value);
+      // this->_pwmCallback(channel, value);
     }
   }
 
@@ -136,10 +133,10 @@ namespace wpilibws {
 
     auto data = dsMsg["data"];
     if (data.containsKey(">enabled")) {
-      String jsonStringTxt;
-      serializeJson(dsMsg, jsonStringTxt);
-      Serial.println(jsonStringTxt);
-      drawDSState(data[">enabled"].as<bool>());     
+      // String jsonStringTxt;
+      // serializeJson(dsMsg, jsonStringTxt);
+      // Serial.println(jsonStringTxt);
+      // drawDSState(data[">enabled"].as<bool>());     
       this->_dsEnabledCallback(data[">enabled"].as<bool>());
     }
   }

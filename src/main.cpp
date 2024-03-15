@@ -16,15 +16,6 @@
 #include "config.h"
 #include "watchdog.h"
 
-// #define GYRO_DATA_AVAILABLE 0xCC
-// #define IMU_I2C_ADDR 0x6B
-
-// using namespace websockets;
-
-// Replace with your network credentials
-// const char* ssid     = "ESP32-Access-Point";
-// const char* password = "vikings!";
-
 // Resource strings
 extern "C" {
 const unsigned char* GetResource_index_html(size_t* len);
@@ -50,6 +41,7 @@ char chipID[20];
 
 AsyncWebServer webServer(3300);
 WebSocketsServer webSocket = WebSocketsServer(3300, "/wpilibws");
+// WebSocketsServer webSocketBroadcast = WebSocketsServer(3300, "/wpilibws");
 
 // ===================================================
 // Handlers for INBOUND WS Messages
@@ -63,10 +55,12 @@ void onDSGenericMessage() {
 void onDSEnabledMessage(bool enabled) {
   Serial.print("DS Enabled: ");
   Serial.println(enabled);
+  drawDSState(enabled);     
   robot.setEnabled(enabled);
 }
 
 void onPWMMessage(int channel, double value) {
+  // Serial.print("Value ");Serial.println(value);
   robot.setPwmValue(channel, value);
 }
 
@@ -123,6 +117,7 @@ void setupWebServerRoutes() {
 
 void broadcast(std::string msg) {
   webSocket.broadcastTXT(msg.c_str());
+  // webSocketBroadcast.broadcastTXT(msg.c_str());
 }
 
 void onWebSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t length) {
@@ -143,13 +138,6 @@ void onWebSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t lengt
           Serial.println(error.f_str());
           break;
         }
-
-        // if (jsonDoc["type"] == "PWM") {
-          // String jsonStringTxt;
-          // serializeJson(jsonDoc, jsonStringTxt);
-          // Serial.println(jsonStringTxt);
-        // }       
-
         wsMsgProcessor.processMessage(jsonDoc);
       }
       break;
@@ -189,9 +177,10 @@ void setup() {
   // webServer.addHook(wsServer.hookForWebserver("/wpilibws", onWebSocketEvent));
   webSocket.onEvent(onWebSocketEvent);
   webSocket.begin();
+  // webSocketBroadcast.begin();
   
   webServer.onNotFound(notFound);
-  webServer.begin();
+  // webServer.begin();
 
   Serial.println("HTTP Server started on port 3300");
   Serial.println("WebSocket server started on /wpilibws on port 3300");
@@ -209,6 +198,7 @@ void loop() {
 
   // webServer.handleClient();
   webSocket.loop();
+  // webSocketBroadcast.loop();
 
   // auto activeEncoders = robot.getActiveEncoderDeviceIds();
   // for (auto& encId : activeEncoders) {
@@ -220,8 +210,8 @@ void loop() {
   // }
 
   // Send the WS message
-  // auto leftjsonMsg = wsMsgProcessor.makeEncoderMessage(0, -wsMsgProcessor.encoder_counts[0]);
-  // broadcast(leftjsonMsg);
+  auto leftjsonMsg = wsMsgProcessor.makeEncoderMessage(0, robot._leftMotor.encoder.getTicks());
+  broadcast(leftjsonMsg);
   // auto rightjsonMsg = wsMsgProcessor.makeEncoderMessage(1, wsMsgProcessor.encoder_counts[1]);
   // broadcast(rightjsonMsg);
 

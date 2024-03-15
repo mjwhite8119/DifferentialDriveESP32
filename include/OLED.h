@@ -114,7 +114,9 @@ inline void drawDSConnect(bool connected, int line=0) {
   clearLinePart(line, 20, 22);
   if (connected) {
     drawText(line, 20, "DS");
-  } 
+  } else {
+    clearLine(3);clearLine(4);clearLine(5);
+  }
 }
 
 inline void drawDSState(bool enabled, int line=3) {

@@ -11,23 +11,25 @@ Encoder::Encoder(uint8_t pinGroup)
   :pinGroup_(pinGroup)
 {   
   // Connect encoder to GPIO pins
-  
-  pinMode(motorPinGroup[pinGroup].encoderA, INPUT); //  Left encoder, channel A
-  digitalWrite(motorPinGroup[pinGroup].encoderA, HIGH); // turn on pullup resistors
-  pinMode(motorPinGroup[pinGroup].encoderB, INPUT); //  Left encoder, channel B
-  digitalWrite(motorPinGroup[pinGroup].encoderB, HIGH); // turn on pullup resistors
+  pinMode(poluluPinGroup[pinGroup].encoderA, INPUT); //  Left encoder, channel A
+  digitalWrite(poluluPinGroup[pinGroup].encoderA, HIGH); // turn on pullup resistors
+  pinMode(poluluPinGroup[pinGroup].encoderB, INPUT); //  Left encoder, channel B
+  digitalWrite(poluluPinGroup[pinGroup].encoderB, HIGH); // turn on pullup resistors
+
+  Serial.print("EncoderB ");Serial.println(poluluPinGroup[pinGroup].encoderB);
+  Serial.print("EncoderA ");Serial.println(poluluPinGroup[pinGroup].encoderA);
+
 
   // Attach interrupts
   switch (pinGroup)
   {
   case 0: 
-    attachInterrupt (motorPinGroup[0].encoderB, encoderISR0, RISING);  // Left encoder
+    attachInterrupt (poluluPinGroup[0].encoderB, encoderISR0, RISING);  // Left encoder
     instances [0] = this; 
     break;
     
   case 1: 
-    Serial.print("Encoder ");Serial.println(motorPinGroup[1].encoderA);
-    attachInterrupt (motorPinGroup[1].encoderA, encoderISR1, RISING); // Right encoder
+    // attachInterrupt (poluluPinGroup[1].encoderA, encoderISR1, RISING); // Right encoder
     instances [1] = this;
     break;
     
@@ -69,7 +71,7 @@ void IRAM_ATTR Encoder::encoderLeftFired_()
 //  pin_val = gpio_input_get(); 
 //  a_val = pin_val & 1<< channelA;
   
-//  if( digitalRead(motorPinGroup[0].encoderA) == 0 ) {
+//  if( digitalRead(poluluPinGroup[0].encoderA) == 0 ) {
   if( gpio_get_level(GPIO_NUM_36) == 0 ) {  
     // B is low
     pulses--; // moving backward
@@ -94,11 +96,11 @@ void IRAM_ATTR Encoder::encoderRightFired_()
   // pulses is 4 bytes so make sure that the write is not interupted
 //  portENTER_CRITICAL_ISR(&timerMux);
 
-//  uint8_t channelA = motorPinGroup[1].encoderA;
-//  uint8_t channelB = motorPinGroup[1].encoderB; 
+//  uint8_t channelA = poluluPinGroup[1].encoderA;
+//  uint8_t channelB = poluluPinGroup[1].encoderB; 
 //  uint32_t curval = gpio_input_get(); 
    
-//  if( digitalRead(motorPinGroup[1].encoderB) == 0 ) {
+//  if( digitalRead(poluluPinGroup[1].encoderB) == 0 ) {
   if( gpio_get_level(GPIO_NUM_39) == 0 ) {  
     // B is low
     portENTER_CRITICAL_ISR(&timerMux);

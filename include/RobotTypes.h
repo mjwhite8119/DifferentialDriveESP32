@@ -1,6 +1,4 @@
-#ifndef _ROBOT_TYPES_H_
-#define _ROBOT_TYPES_H_
-
+#pragma once
 #include <array>
 #include <vector>
 
@@ -45,5 +43,3 @@ const int blocked = 254;
 const int boundary = 255;
 const int badPath = 99;
 const int startValue = 98;
-
-#endif // _ROBOT_TYPES_H_
