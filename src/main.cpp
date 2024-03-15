@@ -45,6 +45,10 @@ WebSocketsServer webSocket = WebSocketsServer(3300, "/wpilibws");
 // ===================================================
 // Handlers for INBOUND WS Messages
 // ===================================================
+void broadcast(std::string msg) {
+  webSocket.broadcastTXT(msg.c_str());
+}
+
 void onDSGenericMessage() {
   // We use the DS messages to feed the watchdog
   robot.watchdog.feed();
@@ -113,9 +117,9 @@ void setupWebServerRoutes() {
 // WebSocket management functions
 // ===================================================
 
-void broadcast(std::string msg) {
-  webSocket.broadcastTXT(msg.c_str());
-}
+// void broadcast(std::string msg) {
+//   webSocket.broadcastTXT(msg.c_str());
+// }
 
 void onWebSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t length) {
   // Serial.println("got request");
@@ -184,7 +188,7 @@ void setup() {
 
 }
 
-unsigned long lastStatusPrintTime = 0;
+unsigned long lastStatusMessageTime = 0;
 
 // Main (CORE0) Loop
 // This core should process WS messages and update the robot accordingly
@@ -195,16 +199,15 @@ void loop() {
   // webServer.handleClient();
   webSocket.loop();
 
-  // Send the WS messages
-  if (robot._leftMotor.encoder.updated()) {
-    auto leftjsonMsg = wsMsgProcessor.makeEncoderMessage(0, robot._leftMotor.encoder.getTicks());
-    broadcast(leftjsonMsg);
-  }
-  
-  // auto rightjsonMsg = wsMsgProcessor.makeEncoderMessage(1, wsMsgProcessor.encoder_counts[1]);
-  // broadcast(rightjsonMsg);
-
-  if (millis() - lastStatusPrintTime > 1000) {
-    lastStatusPrintTime = millis();
+  // Send the WS messages. Can only send messages on intervals
+  if (millis() - lastStatusMessageTime > 50) {   
+    if (robot._leftMotor.encoder.updated()) {
+      auto leftjsonMsg = wsMsgProcessor.makeEncoderMessage(0, robot._leftMotor.encoder.getTicks());
+      broadcast(leftjsonMsg);
+      // Simulate this since there's no encoder on the right motor
+      auto rightjsonMsg = wsMsgProcessor.makeEncoderMessage(1, robot._leftMotor.encoder.getTicks());
+      broadcast(rightjsonMsg);
+    }
+    lastStatusMessageTime = millis();
   }
 }

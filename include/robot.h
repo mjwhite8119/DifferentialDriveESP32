@@ -7,6 +7,7 @@
 #include "watchdog.h"
 // #include "PWMChannel.h"
 #include "PoluluMotor.h"
+#include "SimpleMotor.h"
 
 #define DEFAULT_WATCHDOG_TIMEOUT_MS 1000
 
@@ -30,17 +31,15 @@ namespace xrp {
       void setPwmValue(int channel, double value);
       void setDioValue(int channel, bool value);
 
-      void setWheelSpeeds(const int channel, const float value);
-
-      // std::vector<int> getActiveEncoderDeviceIds();
-      // int getEncoderValueByDeviceId(int deviceId);
-      // int getEncoderValue(int idx);
+      void setWheelSpeeds(const float leftWheelSpeed, const float rightWheelSpeed);
+      void setWheelSpeed(const int channel, const float value);
 
       void checkStatus();
 
       Watchdog watchdog{"robot"};
 
       PoluluMotor _leftMotor;
+      SimpleMotor _rightMotor;
 
     private:
       bool _enabled;

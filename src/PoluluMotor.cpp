@@ -60,16 +60,10 @@ void PoluluMotor::applyPower(WheelSpeedProportion speed) {
 
     printSpeed();
     encoder.printInfo();
-    // Serial.print("Finger flexed ");encoder.printInfo();
   }
   else {
     ledcWrite(channel_1, abs(DBSpeed_)); // PWM speed
     ledcWrite(channel_0, 0);  // Write a LOW
     encoder.direction = REVERSE;
-
-    // printPort(); 
-    printSpeed();
-    encoder.printInfo();
-    // Serial.print("Finger extended "); encoder.printInfo();
   }
 }

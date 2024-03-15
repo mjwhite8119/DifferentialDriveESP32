@@ -1,5 +1,6 @@
 #pragma once
-#include "PWMChannel.h"
+#include "Arduino.h"
+#include "RobotTypes.h"
 
 namespace xrp {
 
@@ -7,11 +8,22 @@ namespace xrp {
         public:
         // SimpleMotor() {} // Default constructor
         SimpleMotor(const uint8_t pinGroup);
-        void setValue(double value);
+        void applyPower(WheelSpeedProportion speed);
 
         // PMW for motors
+        const int channel_0 = 0;
+        const int channel_1 = 1;
         static const int freq = 30000;
         static const int resolution = 8;
+        int DBSpeed_ = 0;
+        const int MAX_DUTY_CYCLE = (int)(pow(2, resolution) - 1);
+
+        double applyDeadband(double input, double threshold) {
+        if (input < -threshold || input > threshold) {
+            return input;
+        }
+            return 0.0;
+        }
 
         protected:
         uint8_t pinGroup_; // motor GPIO pins 
