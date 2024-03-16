@@ -6,8 +6,9 @@
 
 const char* ssidAP     = "ESP32-Access-Point";
 const char* passwordAP = "vikings!";
-const char* ssid     = "";
-const char* password = "";
+
+inline const char* ssid = "CenturyLink9329";
+inline const char* password = "xufxbhsa7nc9ct";
 
 void setupAccessPoint() {
  
@@ -48,6 +49,7 @@ inline void connectWiFi(uint8_t wifi_mode=0)
     WiFi.setAutoConnect(true);      
     WiFi.setAutoReconnect(true);    
     WiFi.begin(ssid, password);
+    Serial.println(String(WiFi.localIP()));
 
   } else if(wifi_mode == 1) {
     Serial.println("WIFI_AP mode");

@@ -43,7 +43,7 @@ void PoluluMotor::applyPower(WheelSpeedProportion speed) {
   DBSpeed_ = (abs(speed) * 255);
 
   // Don't try and move unless we have at least 100 PWM
-  DBSpeed_ = applyDeadband(DBSpeed_, 100);
+  DBSpeed_ = applyDeadband(DBSpeed_, 50);
   if (DBSpeed_ > MAX_DUTY_CYCLE) {
     DBSpeed_ = MAX_DUTY_CYCLE;
   }

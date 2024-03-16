@@ -11,6 +11,11 @@
 
 #include "OTA32.h"
 #include "robot.h"
+#include "MPU6050.h"
+// #include <Adafruit_MPU6050.h>
+// #include <Adafruit_Sensor.h>
+// #include <Wire.h>
+
 // #include "imu.h"
 #include "wpilibws_processor.h"
 // #include "config.h"
@@ -29,7 +34,9 @@ const unsigned char* GetResource_xrp_js(size_t* len);
 wpilibws::WPILibWSProcessor wsMsgProcessor;
 
 xrp::Robot robot;
-// xrp::LSM6IMU imu;
+
+// Gyro
+xrp::MPU6050 imu;
 
 xrp::Watchdog dsWatchdog{"ds"};
 
@@ -164,7 +171,7 @@ void setup() {
   #endif
 
   if (WiFi.status() != WL_CONNECTED) { // WiFi hasn't started
-    connectWiFi(1); // AP mode 1   
+    connectWiFi(1); // STA mode 0, AP mode 1   
     // setupOTA(); // OTA WiFi connection.  
     delay(1000); 
   }
@@ -186,6 +193,8 @@ void setup() {
   Serial.println("WebSocket server started on /wpilibws on port 3300");
   Serial.printf("IP Address: %s\n", WiFi.localIP().toString().c_str());
 
+  imu.setup();
+
 }
 
 unsigned long lastStatusMessageTime = 0;
@@ -200,7 +209,9 @@ void loop() {
   webSocket.loop();
 
   // Send the WS messages. Can only send messages on intervals
-  if (millis() - lastStatusMessageTime > 50) {   
+  if (millis() - lastStatusMessageTime > 50) { 
+
+    // Encoder messages  
     if (robot._leftMotor.encoder.updated()) {
       auto leftjsonMsg = wsMsgProcessor.makeEncoderMessage(0, robot._leftMotor.encoder.getTicks());
       broadcast(leftjsonMsg);
@@ -208,6 +219,12 @@ void loop() {
       auto rightjsonMsg = wsMsgProcessor.makeEncoderMessage(1, robot._leftMotor.encoder.getTicks());
       broadcast(rightjsonMsg);
     }
+
+    // Gyro messages
+    imu.update();
+    auto gyroJsonMsg = wsMsgProcessor.makeGyroMessage(imu.getRates(), imu.getAngles());
+    broadcast(gyroJsonMsg);
+
     lastStatusMessageTime = millis();
   }
 }

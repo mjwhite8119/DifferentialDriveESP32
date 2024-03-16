@@ -38,6 +38,7 @@ namespace xrp {
 
       Watchdog watchdog{"robot"};
 
+      // Motors 
       PoluluMotor _leftMotor;
       SimpleMotor _rightMotor;
 
