@@ -36,7 +36,7 @@ void PoluluMotor::init() {
   Serial.print("Encoder "); encoder.printPort(); Serial.println("");
 }
 
-void PoluluMotor::applyPower(WheelSpeedProportion speed) {
+void PoluluMotor::applyPower(DutyCycle speed) {
  
   // Convert from dutyCycle speed to PWM
   // Don't try and move unless we have at least 50 PWM

@@ -23,7 +23,7 @@ namespace xrp {
         ledcWrite(channel_1, 0);   
     }
 
-    void SimpleMotor::applyPower(WheelSpeedProportion speed) {
+    void SimpleMotor::applyPower(DutyCycle speed) {
 
         // Convert from dutyCycle speed to PWM
         // Don't try and move unless we have at least 50 PWM

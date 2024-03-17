@@ -95,8 +95,7 @@ namespace xrp {
     clearLine(4 + channel);
     drawText(4 + channel, 0, String(value));
     Serial.print("Channel ");Serial.print(channel);Serial.print(" Speed ");Serial.println(value);
-    const WheelSpeedProportion speed = applyDeadband(value, 0.05);
-    // const WheelSpeedProportion speed = value;
+    const DutyCycle speed = applyDeadband(value, 0.05);
     if (channel == 0) {
       _leftMotor.applyPower(speed); // Wheel speed proportion 
     } else if (channel == 1) {

@@ -17,7 +17,7 @@ typedef float HeadingRadians;
 typedef float RadiansPerSecond;
 typedef float DegreesPerSecond;
 
-typedef float WheelSpeedProportion; // Wheel speed distributed from -1.0 (min) to 1.0 (max)
+typedef float DutyCycle; // Wheel speed distributed from -1.0 (min) to 1.0 (max)
 typedef int EncoderPulsesPerSecond; // Encoder pulses per second
 
 typedef float Seconds;

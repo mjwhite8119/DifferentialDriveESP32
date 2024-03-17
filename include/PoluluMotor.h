@@ -31,7 +31,7 @@ class PoluluMotor
     const int MAX_DUTY_CYCLE = (int)(pow(2, resolution) - 1);
 
     void init();
-    void applyPower(WheelSpeedProportion speed);
+    void applyPower(DutyCycle speed);
 
   private:
     // Motor ports

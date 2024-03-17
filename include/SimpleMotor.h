@@ -8,7 +8,7 @@ namespace xrp {
         public:
         // SimpleMotor() {} // Default constructor
         SimpleMotor(const uint8_t pinGroup);
-        void applyPower(WheelSpeedProportion speed);
+        void applyPower(DutyCycle speed);
 
         // PMW for motors
         const int channel_0 = 0;
