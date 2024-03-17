@@ -8,8 +8,8 @@ namespace xrp {
 
   Robot::Robot() :
       _enabled(false),
-      _leftMotor(0), // First pin group of PoluluMotor
-      _rightMotor(0) // First pin group of SimpleMotor
+      _leftMotor(0), // Pin group of Motor
+      _rightMotor(1) // Pin group of Motor
       {
       std::cout << "Robot Constructor called." << std::endl;
       _leftMotor.init();
@@ -95,12 +95,20 @@ namespace xrp {
     clearLine(4 + channel);
     drawText(4 + channel, 0, String(value));
     Serial.print("Channel ");Serial.print(channel);Serial.print(" Speed ");Serial.println(value);
-    const WheelSpeedProportion speed = value;
+    const WheelSpeedProportion speed = applyDeadband(value, 0.05);
+    // const WheelSpeedProportion speed = value;
     if (channel == 0) {
       _leftMotor.applyPower(speed); // Wheel speed proportion 
     } else if (channel == 1) {
       _rightMotor.applyPower(speed); // Wheel speed proportion
     }
+  }
+
+  double Robot::applyDeadband(double input, double threshold) {
+    if (input < -threshold || input > threshold) {
+      return input;
+    }
+    return 0.0;
   }
 
 }

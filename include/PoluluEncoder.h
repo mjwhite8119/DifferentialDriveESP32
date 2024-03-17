@@ -59,7 +59,7 @@ class PoluluEncoder
     }
 
     void printPort() {
-      Serial.print("Port ");Serial.print(poluluPinGroup[pinGroup_].encoderA);
+      Serial.print("Port ");Serial.print(encoderPinGroup[pinGroup_].encoderA);
     }
 
     static PoluluEncoder * instances [2];

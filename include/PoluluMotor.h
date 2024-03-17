@@ -57,7 +57,7 @@ class PoluluMotor
 
     void printSpeed() {
       if (count > 1000) {
-        Serial.print("Ports "); Serial.print(poluluPinGroup[pinGroup_].motorIN1); Serial.print(", ");Serial.print("Speed "); Serial.println(DBSpeed_);
+        Serial.print("Ports "); Serial.print(motorPinGroup[pinGroup_].motorIN1); Serial.print(", ");Serial.print("Speed "); Serial.println(DBSpeed_);
         count = 0;
       }  
       count += 1; 

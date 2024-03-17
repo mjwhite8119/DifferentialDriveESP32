@@ -25,26 +25,21 @@ namespace xrp {
 
     void SimpleMotor::applyPower(WheelSpeedProportion speed) {
 
-        // Convert from proportional speed to PWM
-        Serial.print(" Speed ");Serial.println(speed);
-        DBSpeed_ = (abs(speed) * 255);
+        // Convert from dutyCycle speed to PWM
+        // Don't try and move unless we have at least 50 PWM
+        const int PWM = map(abs(speed), 0, 1, 50, MAX_DUTY_CYCLE);
+        Serial.print(" Speed=");Serial.print(speed);Serial.print(" PWM=");Serial.println(PWM);
 
-        // Don't try and move unless we have at least 100 PWM
-        DBSpeed_ = applyDeadband(DBSpeed_, 50);
-        if (DBSpeed_ > MAX_DUTY_CYCLE) {
-            DBSpeed_ = MAX_DUTY_CYCLE;
-        }
-        Serial.print(" DBSpeed ");Serial.println(DBSpeed_);
-        if (DBSpeed_ == 0) {
+        if (speed == 0) {
             ledcWrite(channel_0, 0); // Write a LOW
             ledcWrite(channel_1, 0); // Write a LOW
         } 
         else if (speed > 0) {
-            ledcWrite(channel_0, abs(DBSpeed_)); // PWM speed
+            ledcWrite(channel_0, abs(PWM)); // PWM speed
             ledcWrite(channel_1, 0);  // Write a LOW
         }
         else {
-            ledcWrite(channel_1, abs(DBSpeed_)); // PWM speed
+            ledcWrite(channel_1, abs(PWM)); // PWM speed
             ledcWrite(channel_0, 0);  // Write a LOW
         }
     }

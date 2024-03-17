@@ -21,15 +21,13 @@ PoluluEncoder::PoluluEncoder(uint8_t pinGroup)
   This will be doubled to 12 if both pins are attached.
 */
 void PoluluEncoder::init() {
-  pinMode(poluluPinGroup[pinGroup_].encoderA, INPUT); //  channel A
-  pinMode(poluluPinGroup[pinGroup_].encoderB, INPUT); //  channel B
+  pinMode(encoderPinGroup[pinGroup_].encoderA, INPUT); //  channel A
+  pinMode(encoderPinGroup[pinGroup_].encoderB, INPUT); //  channel B
   
-  attachInterrupt (poluluPinGroup[pinGroup_].encoderA, encoderISRA, CHANGE);  // Left encoder
-  // attachInterrupt (6, encoderISRA, CHANGE);  // Left encoder
+  attachInterrupt (encoderPinGroup[pinGroup_].encoderA, encoderISRA, CHANGE);  // Left encoder
   instances [0] = this; 
 
-  attachInterrupt (poluluPinGroup[pinGroup_].encoderB, encoderISRB, CHANGE); // Right encoder
-  // attachInterrupt (7, encoderISRB, CHANGE); // Right encoder
+  attachInterrupt (encoderPinGroup[pinGroup_].encoderB, encoderISRB, CHANGE); // Right encoder
   instances [1] = this;
 }
 

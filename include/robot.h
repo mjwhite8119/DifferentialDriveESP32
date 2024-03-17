@@ -35,6 +35,7 @@ namespace xrp {
       void setWheelSpeed(const int channel, const float value);
 
       void checkStatus();
+      double applyDeadband(double input, double threshold);
 
       Watchdog watchdog{"robot"};
 
