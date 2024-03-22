@@ -8,6 +8,9 @@ namespace xrp {
         public:
         // SimpleMotor() {} // Default constructor
         SimpleMotor(const uint8_t pinGroup);
+
+        void init() {} // empty for a simple motor
+
         void applyPower(DutyCycle speed);
 
         // PMW for motors

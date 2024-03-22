@@ -1,8 +1,4 @@
 #include "Robot.h"
-#include <Arduino.h>
-#include "OLED.h"
-#include <iostream>
-// #include "quadrature.pio.h"
 
 namespace xrp {
 
@@ -13,6 +9,7 @@ namespace xrp {
       {
       std::cout << "Robot Constructor called." << std::endl;
       _leftMotor.init();
+      _rightMotor.init();
 
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWrite(LED_BUILTIN, LOW);

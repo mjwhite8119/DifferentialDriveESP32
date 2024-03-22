@@ -9,33 +9,44 @@
 const uint8_t leftWheelPinGroup = 0; // GPIO pin group config.h
 const uint8_t rightWheelPinGroup = 1; // GPIO pin group config.h
 
+// Pins for the DRV3388 motor driver
 static struct DRAM_ATTR MotorPins {
   const byte motorIN1; // motor IN1 pin1
   const byte motorIN2; // motor IN2 pin2
 } motorPinGroup[2] = {2, 3,
                       4, 5 };
 
+// Pins for the Polulu motor encoders
 static struct DRAM_ATTR EncoderPins {
   const byte encoderA; 
   const byte encoderB; 
 } encoderPinGroup[1] = {6, 7};
 
-#define HELTEC_WIFI_KIT_32 true
+// Pins for the L298N motor driver with optical encoders
+static struct L298NMotorPins {
+  const byte motorDir1; // motor direction pin1
+  const byte motorDir2; // motor direction pin2
+  const byte enable; // Enable PMW 
+  const byte encoder; // Wheel encoder
+} motorPinGroupL298N[2] = {39, 38, 37, 7,
+                          40, 41, 42, 6};
+
+// #define HELTEC_WIFI_KIT_32 false
 // -------------------------------------------------------//
 // OLED configuration                                     //
 // -------------------------------------------------------//
-#define USE_OLED false
+#define USE_OLED true
 
-#if USE_OLED
-  // Library used for OLED
-  #if (HELTEC_WIFI_KIT_32 || TTGO_LORA32_OLED)
-    #define HELTEC true
-    #define USE_U8G2 false
-  #else  
-    #define USE_U8G2 true
-    #define HELTEC false
-  #endif   
-#endif
+// #if USE_OLED
+//   // Library used for OLED
+//   #if (HELTEC_WIFI_KIT_32 || TTGO_LORA32_OLED)
+//     #define HELTEC true
+//     #define USE_U8G2 false
+//   #else  
+//     #define USE_U8G2 true
+//     #define HELTEC false
+//   #endif   
+// #endif
 
 //----------------------------------
 // Include timer interrupt code

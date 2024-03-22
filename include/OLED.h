@@ -2,22 +2,26 @@
 #include "Constants.h"
 
 // ---- Use the Heltec library ----------- //
-#if HELTEC
-  #include "SSD1306.h" 
+
+#if USE_OLED 
+  #include <Adafruit_GFX.h>
+  #include <Adafruit_SSD1306.h>
 
   #define SCREEN_WIDTH 128 // OLED display width, in pixels
-  #define SCREEN_HEIGHT 64 // OLED display height, in pixels
+  #define SCREEN_HEIGHT 32 // OLED display height, in pixels
 
-  #define OLED_SDA    4
-  #define OLED_SCL   15
-  #define OLED_RESET   16 //RST must be set by software
+  // #define OLED_SDA   11
+  // #define OLED_SCL   10
 
-  inline SSD1306  display(0x3c, OLED_SDA, OLED_SCL);
-#endif
+  // inline TwoWire I2C0 = TwoWire(1);  // Create an instance for I2C0
 
-#if USE_OLED
+  #define OLED_RESET    -1
+  inline Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+  // inline Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &I2C0, OLED_RESET);
+
+  // Adds some images 
   #include "images.h"
-#endif
+#endif // USE_OLED
 
 /* ------------------- Drawing functions -----------------------------*/
 // Clear a rectangled area of the screen
@@ -38,13 +42,13 @@ inline void clearLinePart(const uint16_t lineNumber, const uint16_t startPositio
 #if USE_OLED  
   uint16_t yPos=0;
   const uint16_t lineWidth = 11;
-  #if HELTEC
+  // #if HELTEC
     yPos = (lineNumber * lineWidth) - 1;
     if (lineNumber > 3) {yPos--;}
-  #else
-    lineWidth = 11;
-    yPos = (lineNumber * lineWidth);
-  #endif  
+  // #else
+  //   lineWidth = 11;
+  //   yPos = (lineNumber * lineWidth);
+  // #endif  
   clearRect(startPosition, yPos, width, lineWidth);
 #endif  
 }
@@ -60,47 +64,49 @@ inline void drawText(const uint16_t lineNumber, const uint16_t startPosition, co
 #if USE_OLED  
   const uint16_t lineWidth = 10;
   const uint16_t yPos=lineNumber * lineWidth;
-  #if USE_U8G2
-    // U8G2 uses c-string so convert.
-    const char * char_text = text.c_str();
-    // write something to the internal memory
-    lineWidth = 11;
-    yPos = (lineNumber * lineWidth) + 9;
-    u8g2.drawStr(startPosition, yPos, char_text);  
-    // transfer internal memory to the display
-    u8g2.sendBuffer();             
-  #endif
+  // #if USE_U8G2
+  //   // U8G2 uses c-string so convert.
+  //   const char * char_text = text.c_str();
+  //   // write something to the internal memory
+  //   lineWidth = 11;
+  //   yPos = (lineNumber * lineWidth) + 9;
+  //   u8g2.drawStr(startPosition, yPos, char_text);  
+  //   // transfer internal memory to the display
+  //   u8g2.sendBuffer();             
+  // #endif
   
-  #if HELTEC
-    display.drawString(startPosition, yPos, text);
+  // #if HELTEC
+    display.setCursor(lineNumber, startPosition);
+    display.println(text);
+    // display.drawString(startPosition, yPos, text);
     display.display();
-  #endif 
+  // #endif 
 #endif   
 }
 
 inline void drawBitmap(const uint16_t x, const uint16_t y, const uint16_t width, const uint16_t height, const unsigned char* bm_bits) 
 {
 #if USE_OLED  
-  #if USE_U8G2
-    u8g2.drawXBMP(x, y, width, height, bm_bits);
-    u8g2.sendBuffer();  
-  #endif
-  #if HELTEC
-    display.drawXbm(x, y, width, height, bm_bits);
+  // #if USE_U8G2
+  //   u8g2.drawXBMP(x, y, width, height, bm_bits);
+  //   u8g2.sendBuffer();  
+  // #endif
+  // #if HELTEC
+    display.drawBitmap(x, y, bm_bits, SCREEN_WIDTH, SCREEN_HEIGHT, SSD1306_WHITE);
     display.display();
-  #endif  
+  // #endif  
 #endif  
 }
 
 // Clear the entire screen
 inline void clearDisplay() {
 #if USE_OLED  
-  #if USE_U8G2
-    u8g2.clear();
-  #endif
-  #if HELTEC
-    display.clear();
-  #endif
+  // #if USE_U8G2
+  //   u8g2.clear();
+  // #endif
+  // #if HELTEC
+    display.clearDisplay();
+  // #endif
 #endif  
 }
 
@@ -219,33 +225,48 @@ inline void drawProgressBar(const uint16_t x, const uint16_t y, const uint16_t w
 // *****************************************************//
 inline void setupOLED()
 {
-#if USE_U8G2
-  LOGLN("U8G2 OLED connect");
+// #if USE_U8G2
+//   LOGLN("U8G2 OLED connect");
 
-  #define OLED_SDA    4
-  #define OLED_SCL   15
-  #define OLED_RESET   16 //RST must be set by software
-  U8G2_SSD1306_128X64_NONAME_1_SW_I2C u8g2(U8G2_R0, /* clock=*/ 15, /* data=*/ 4, /* reset=*/ 16);
-  u8g2.begin();
-  // clear the internal memory
-  u8g2.clearBuffer();   
-  u8g2.setFontMode(0);
-  u8g2.setFont(u8g2_font_t0_11_mr);         
-#endif  
+//   #define OLED_SDA    4
+//   #define OLED_SCL   15
+//   #define OLED_RESET   16 //RST must be set by software
+//   U8G2_SSD1306_128X64_NONAME_1_SW_I2C u8g2(U8G2_R0, /* clock=*/ 15, /* data=*/ 4, /* reset=*/ 16);
+//   u8g2.begin();
+//   // clear the internal memory
+//   u8g2.clearBuffer();   
+//   u8g2.setFontMode(0);
+//   u8g2.setFont(u8g2_font_t0_11_mr);         
+// #endif  
+
+  Serial.println("SSD1306 setup");
+  // Wire.begin(OLED_SDA, OLED_SCL);
+  // I2C0.begin();
+
+  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+    Serial.println("SSD1306 allocation failed");
+    for (;;);
+  }
+
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0, 0);
+  display.println("Hello, world!");
+  display.display();
+// #if HELTEC
+
+//   pinMode(OLED_RESET,OUTPUT);
+//   digitalWrite(OLED_RESET, LOW);    
+//   delay(50); 
+//   digitalWrite(OLED_RESET, HIGH);
+
+//   display.init();
+
+//   display.setContrast(255);
   
-#if HELTEC
-
-  pinMode(OLED_RESET,OUTPUT);
-  digitalWrite(OLED_RESET, LOW);    
-  delay(50); 
-  digitalWrite(OLED_RESET, HIGH);
-
-  display.init();
-
-  display.setContrast(255);
-  
-//  display.flipScreenVertically(); 
-  display.setFont(ArialMT_Plain_10);        
-  display.setTextAlignment(TEXT_ALIGN_LEFT);
-#endif  
+// //  display.flipScreenVertically(); 
+//   display.setFont(ArialMT_Plain_10);        
+//   display.setTextAlignment(TEXT_ALIGN_LEFT);
+// #endif  
 }

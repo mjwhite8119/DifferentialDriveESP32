@@ -13,9 +13,10 @@ PoluluMotor::PoluluMotor(uint8_t pinGroup)
     pinMode(motorPinGroup[pinGroup_].motorIN1, OUTPUT); 
     pinMode(motorPinGroup[pinGroup_].motorIN2, OUTPUT); //  channel B
 
-    // create a PWM channels
-    ledcSetup(channel_0, freq, resolution); 
-    ledcSetup(channel_1, freq, resolution); 
+    // create a PWM channel for each direction
+    // TODO there may need to be a separate channel for each motor
+    ledcSetup(channel_0, freq, resolution); // Forward
+    ledcSetup(channel_1, freq, resolution); // Backward
 
     // attach channels to pins
     ledcAttachPin(motorPinGroup[pinGroup_].motorIN1, channel_0); 
@@ -53,12 +54,12 @@ void PoluluMotor::applyPower(DutyCycle speed) {
     ledcWrite(channel_1, 0);  // Write a LOW
     encoder.direction = FORWARD;
 
-    // printSpeed();
+    printSpeed(speed);
     // encoder.printInfo();
   }
   else {
-    ledcWrite(channel_1, abs(PWM)); // PWM speed
     ledcWrite(channel_0, 0);  // Write a LOW
+    ledcWrite(channel_1, abs(PWM)); // PWM speed
     encoder.direction = REVERSE;
   }
 }

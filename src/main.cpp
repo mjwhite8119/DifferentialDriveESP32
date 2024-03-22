@@ -166,9 +166,11 @@ void setup() {
   digitalWrite(BUILTIN_LED, LOW);
 
   // Setup the OLED.
-  #if USE_OLED
+  // #if USE_OLED
+  Serial.print("setupOLED...");
     setupOLED();
-  #endif
+  Serial.println("Done");
+  // #endif
 
   if (WiFi.status() != WL_CONNECTED) { // WiFi hasn't started
     connectWiFi(1); // STA mode 0, AP mode 1   
@@ -216,7 +218,7 @@ void loop() {
       auto leftjsonMsg = wsMsgProcessor.makeEncoderMessage(0, robot._leftMotor.encoder.getTicks());
       broadcast(leftjsonMsg);
       // Simulate this since there's no encoder on the right motor
-      auto rightjsonMsg = wsMsgProcessor.makeEncoderMessage(1, robot._leftMotor.encoder.getTicks());
+      auto rightjsonMsg = wsMsgProcessor.makeEncoderMessage(1, robot._rightMotor.encoder.getTicks() * -1);
       broadcast(rightjsonMsg);
     }
 

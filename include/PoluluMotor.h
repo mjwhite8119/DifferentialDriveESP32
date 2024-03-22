@@ -37,15 +37,15 @@ class PoluluMotor
     // Motor ports
     uint8_t pinGroup_;
 
-     int DBSpeed_ = 0;
+    //  int DBSpeed_ = 0;
      int count = 0;
 
-    double applyDeadband(double input, double threshold) {
-      if (input < -threshold || input > threshold) {
-        return input;
-      }
-      return 0.0;
-    }
+    // double applyDeadband(double input, double threshold) {
+    //   if (input < -threshold || input > threshold) {
+    //     return input;
+    //   }
+    //   return 0.0;
+    // }
 
     void printPort() {
       if (count > 1000) {
@@ -55,9 +55,9 @@ class PoluluMotor
       count += 1; 
     }
 
-    void printSpeed() {
+    void printSpeed(DutyCycle speed) {
       if (count > 1000) {
-        Serial.print("Ports "); Serial.print(motorPinGroup[pinGroup_].motorIN1); Serial.print(", ");Serial.print("Speed "); Serial.println(DBSpeed_);
+        Serial.print("Ports "); Serial.print(motorPinGroup[pinGroup_].motorIN1); Serial.print(", ");Serial.print("Speed "); Serial.println(speed);
         count = 0;
       }  
       count += 1; 

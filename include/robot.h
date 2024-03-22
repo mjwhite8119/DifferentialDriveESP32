@@ -4,10 +4,11 @@
 #include <vector>
 #include <iostream>
 
+#include "OLED.h"
 #include "watchdog.h"
-// #include "PWMChannel.h"
-#include "PoluluMotor.h"
-#include "SimpleMotor.h"
+// #include "PoluluMotor.h"
+// #include "SimpleMotor.h"
+#include "MotorL298N.h"
 
 #define DEFAULT_WATCHDOG_TIMEOUT_MS 1000
 
@@ -40,8 +41,10 @@ namespace xrp {
       Watchdog watchdog{"robot"};
 
       // Motors 
-      PoluluMotor _leftMotor;
-      SimpleMotor _rightMotor;
+      // PoluluMotor _leftMotor;
+      // SimpleMotor _rightMotor;
+      MotorL298N _leftMotor;
+      MotorL298N _rightMotor;
 
     private:
       bool _enabled;
