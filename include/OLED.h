@@ -220,6 +220,22 @@ inline void drawProgressBar(const uint16_t x, const uint16_t y, const uint16_t w
 #endif  
 }
 
+inline void drawConnecting(String id) {
+#if USE_OLED  
+  drawText(0, 0, "Connecting...");
+  drawText(2, 1, id);
+#endif
+}
+
+inline void drawConnected(IPAddress IP) {
+#if USE_OLED    
+  clearDisplayBelowHeader();
+  drawWiFi(); drawAP();
+  drawText(1, 0, "Connected");
+  drawText(2, 0, "IP Address");drawText(2, 62, IP.toString());
+#endif
+}
+
 //******************************************************//
 // setup oled
 // *****************************************************//
@@ -242,31 +258,17 @@ inline void setupOLED()
   Serial.println("SSD1306 setup");
   // Wire.begin(OLED_SDA, OLED_SCL);
   // I2C0.begin();
-
+#if USE_OLED
   if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
     Serial.println("SSD1306 allocation failed");
     for (;;);
   }
 
   display.clearDisplay();
-  display.setTextSize(1);
-  display.setTextColor(SSD1306_WHITE);
-  display.setCursor(0, 0);
-  display.println("Hello, world!");
-  display.display();
-// #if HELTEC
-
-//   pinMode(OLED_RESET,OUTPUT);
-//   digitalWrite(OLED_RESET, LOW);    
-//   delay(50); 
-//   digitalWrite(OLED_RESET, HIGH);
-
-//   display.init();
-
-//   display.setContrast(255);
-  
-// //  display.flipScreenVertically(); 
-//   display.setFont(ArialMT_Plain_10);        
-//   display.setTextAlignment(TEXT_ALIGN_LEFT);
-// #endif  
+  // display.setTextSize(1);
+  // display.setTextColor(SSD1306_WHITE);
+  // display.setCursor(0, 0);
+  drawText(1,0,"Hello World!");
+  // display.display();
+#endif  
 }

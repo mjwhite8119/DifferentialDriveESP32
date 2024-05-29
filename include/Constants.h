@@ -37,17 +37,6 @@ static struct L298NMotorPins {
 // -------------------------------------------------------//
 #define USE_OLED true
 
-// #if USE_OLED
-//   // Library used for OLED
-//   #if (HELTEC_WIFI_KIT_32 || TTGO_LORA32_OLED)
-//     #define HELTEC true
-//     #define USE_U8G2 false
-//   #else  
-//     #define USE_U8G2 true
-//     #define HELTEC false
-//   #endif   
-// #endif
-
 //----------------------------------
 // Include timer interrupt code
 //----------------------------------

@@ -35,6 +35,7 @@ namespace xrp {
     if (prevEnabledValue && !enabled) {
       // Switching to disabled mode. Stop all motors
       Serial.println("Disabling Robot");
+      drawDSState(false);
       setWheelSpeeds(0, 0);
     }
     else if (!prevEnabledValue && enabled) {
@@ -89,13 +90,17 @@ namespace xrp {
   // Input is a speed ratio between -1.0 (backwards) and 1.0 (forward) 
   // -----------------------------------------------------------------
   void Robot::setWheelSpeed(const int channel, const float value) { 
-    clearLine(4 + channel);
-    drawText(4 + channel, 0, String(value));
-    Serial.print("Channel ");Serial.print(channel);Serial.print(" Speed ");Serial.println(value);
+    // clearLine(4 + channel);
+    drawText(8 + channel * 5, 1, String(int(value*100)));
+    //Serial.print("Channel ");Serial.print(channel);Serial.print(" Speed ");Serial.println(value);
     const DutyCycle speed = applyDeadband(value, 0.05);
     if (channel == 0) {
+      drawText(8, 1, "    ");
+      drawText(8, 1, String(int(value*100)));     
       _leftMotor.applyPower(speed); // Wheel speed proportion 
     } else if (channel == 1) {
+      drawText(13, 1, "    ");
+      drawText(13, 1, String(int(value*100)));
       _rightMotor.applyPower(speed); // Wheel speed proportion
     }
   }

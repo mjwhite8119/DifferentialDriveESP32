@@ -7,6 +7,7 @@ namespace xrp {
     }
 
     void MPU6050::setup() {
+        Serial.println("Initialize MPU6050");
         // Try to initialize!
         if (!mpu.begin()) {
             Serial.println("Failed to find MPU6050 chip");

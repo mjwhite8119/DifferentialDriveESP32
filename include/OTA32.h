@@ -2,7 +2,8 @@
 
 #include <WiFi.h> 
 #include <ArduinoOTA.h>
-#include "OLED.h"
+// #include "OLED.h"
+// #include "LCD1602.h"
 
 const char* ssidAP     = "ESP32-Access-Point";
 const char* passwordAP = "vikings!";
@@ -36,15 +37,14 @@ void setupAccessPoint() {
 ////////////////////////////////////////////////
 inline void connectWiFi(uint8_t wifi_mode=0)
 {
-  // LOGLN("Connecting Wifi");
-  drawText(1, 0, "Connecting...");
-
   WiFi.disconnect(); // Just in case
   delay(1000); 
     
   if (wifi_mode == 0) {
     Serial.println("WIFI_STA mode");
-    drawText(2, 0, String(ssid));
+    // Display Connecting to the LCD
+    drawConnecting(String(ssid));
+
     WiFi.mode(WIFI_STA); // Mode 0 (default)
     WiFi.setAutoConnect(true);      
     WiFi.setAutoReconnect(true);    
@@ -53,9 +53,10 @@ inline void connectWiFi(uint8_t wifi_mode=0)
 
   } else if(wifi_mode == 1) {
     Serial.println("WIFI_AP mode");
-    drawText(2, 0, String(ssidAP));
-    WiFi.mode(WIFI_AP); // Mode 1 
-    
+    // Display Connecting to the LCD
+    drawConnecting(String(ssidAP));
+
+    WiFi.mode(WIFI_AP); // Mode 1    
     WiFi.softAP(ssidAP, passwordAP);
 
     // Set static IP
@@ -67,10 +68,13 @@ inline void connectWiFi(uint8_t wifi_mode=0)
       return;
     }
     IPAddress IP = WiFi.softAPIP();
-    clearDisplayBelowHeader();
-    drawWiFi(); drawAP();
-    drawText(1, 0, "Connected");
-    drawText(2, 0, "IP Address");drawText(2, 62, IP.toString());
+
+    // Display Connected to the LCD
+    drawConnected(IP);
+    // clearDisplayBelowHeader();
+    // drawWiFi(); drawAP();
+    // drawText(1, 0, "Connected");
+    // drawText(2, 0, "IP Address");drawText(2, 62, IP.toString());
     Serial.print("AP IP address: ");
     Serial.println(IP);
     

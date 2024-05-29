@@ -52,13 +52,25 @@ MotorL298N::MotorL298N(const uint8_t pinGroup)
 }
 
 // ---------------- Public member methods -------------------------
+int mapFloatToInt(float x, float in_min, float in_max, int out_min, int out_max) {
+  // Ensure the input range is not zero to avoid division by zero
+  if (in_min == in_max) {
+    return out_min; // or handle the error as needed
+  }
+
+  // Map the float value to the target range
+  float mappedValue = (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+
+  // Convert the result to an integer
+  return (int)mappedValue;
+}
 
 void MotorL298N::applyPower(DutyCycle speed) {
 
   // Convert from dutyCycle speed to PWM
   // Don't try and move unless we have at least 50 PWM
-  const int PWM = map(abs(speed), 0, 1, 50, MAX_DUTY_CYCLE);
-  Serial.print(" Speed=");Serial.print(speed);Serial.print(" PWM=");Serial.println(PWM);
+  const int PWM = mapFloatToInt(abs(speed), 0.0, 1.0, 125, MAX_DUTY_CYCLE);
+  // Serial.print(" Speed=");Serial.print(speed);Serial.print(" PWM=");Serial.println(PWM);
 
   if (speed == 0) {
     encoder.direction = STOPPED;

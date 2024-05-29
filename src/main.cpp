@@ -1,4 +1,7 @@
 #include <Arduino.h>
+
+// #include "i2cScan.h"
+#include "LCD1602.h"
 #include <WiFi.h>
 #include <WiFiMulti.h>
 #include <WebServer.h>
@@ -10,16 +13,14 @@
 #include <vector>
 
 #include "OTA32.h"
-#include "robot.h"
+#include "Robot.h"
 #include "MPU6050.h"
-// #include <Adafruit_MPU6050.h>
-// #include <Adafruit_Sensor.h>
-// #include <Wire.h>
 
 // #include "imu.h"
 #include "wpilibws_processor.h"
 // #include "config.h"
 #include "watchdog.h"
+
 
 // Resource strings
 extern "C" {
@@ -52,9 +53,9 @@ WebSocketsServer webSocket = WebSocketsServer(3300, "/wpilibws");
 // ===================================================
 // Handlers for INBOUND WS Messages
 // ===================================================
-void broadcast(std::string msg) {
-  webSocket.broadcastTXT(msg.c_str());
-}
+// void broadcast(std::string msg) {
+//   webSocket.broadcastTXT(msg.c_str());
+// }
 
 void onDSGenericMessage() {
   // We use the DS messages to feed the watchdog
@@ -120,13 +121,17 @@ void setupWebServerRoutes() {
   });
 }
 
+void notFound(AsyncWebServerRequest *request) {
+    request->send(404, "text/plain", "Not found");
+}
+
 // ===================================================
 // WebSocket management functions
 // ===================================================
 
-// void broadcast(std::string msg) {
-//   webSocket.broadcastTXT(msg.c_str());
-// }
+void broadcast(std::string msg) {
+  webSocket.broadcastTXT(msg.c_str());
+}
 
 void onWebSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t length) {
   // Serial.println("got request");
@@ -152,10 +157,6 @@ void onWebSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t lengt
   }
 }
 
-void notFound(AsyncWebServerRequest *request) {
-    request->send(404, "text/plain", "Not found");
-}
-
 // ===================================================
 // Boot-Up and Main Control Flow
 // ===================================================
@@ -165,12 +166,13 @@ void setup() {
   Serial.begin(115200);
   digitalWrite(BUILTIN_LED, LOW);
 
+  imu.setup();
+
   // Setup the OLED.
-  // #if USE_OLED
-  Serial.print("setupOLED...");
-    setupOLED();
-  Serial.println("Done");
-  // #endif
+  #if USE_OLED
+    // setupOLED();
+    setupLCD();
+  #endif
 
   if (WiFi.status() != WL_CONNECTED) { // WiFi hasn't started
     connectWiFi(1); // STA mode 0, AP mode 1   
@@ -181,21 +183,23 @@ void setup() {
   // Set up WebSocket messages
   hookupWSMessageHandlers();
 
+  webSocket.onEvent(onWebSocketEvent);
+  webSocket.begin();
+
+  Serial.println("WebSocket server started on /wpilibws on port 3300");
+  Serial.printf("IP Address: %s\n", WiFi.localIP().toString().c_str());
+  
   // Set up the web server and websocket server hooks
   setupWebServerRoutes();
 
-  // webServer.addHook(wsServer.hookForWebserver("/wpilibws", onWebSocketEvent));
-  webSocket.onEvent(onWebSocketEvent);
-  webSocket.begin();
-  
+// webServer.addHook(wsServer.hookForWebserver("/wpilibws", onWebSocketEvent));
   webServer.onNotFound(notFound);
   webServer.begin();
 
   Serial.println("HTTP Server started on port 3300");
-  Serial.println("WebSocket server started on /wpilibws on port 3300");
-  Serial.printf("IP Address: %s\n", WiFi.localIP().toString().c_str());
 
-  imu.setup();
+  // Diagnostic test for I2C connectivity
+  // i2cScan();
 
 }
 
@@ -217,7 +221,8 @@ void loop() {
     if (robot._leftMotor.encoder.updated()) {
       auto leftjsonMsg = wsMsgProcessor.makeEncoderMessage(0, robot._leftMotor.encoder.getTicks());
       broadcast(leftjsonMsg);
-      // Simulate this since there's no encoder on the right motor
+    }
+    if (robot._rightMotor.encoder.updated()) {  
       auto rightjsonMsg = wsMsgProcessor.makeEncoderMessage(1, robot._rightMotor.encoder.getTicks() * -1);
       broadcast(rightjsonMsg);
     }
