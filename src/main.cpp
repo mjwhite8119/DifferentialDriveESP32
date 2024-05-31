@@ -92,13 +92,8 @@ void hookupWSMessageHandlers() {
 }
 
 // ===================================================
-// WebSocket management functions
+// WebSocket management functions Core0
 // ===================================================
-
-void broadcast(std::string msg) {
-  webSocket.broadcastTXT(msg.c_str());
-}
-
 void onWebSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t length) {
   // Serial.println("got request");
   switch (type) {
@@ -124,22 +119,44 @@ void onWebSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t lengt
 }
 
 // ===================================================
-// Setup CPU Core Tasks
+// Setup CPU Core1 Tasks
 // ===================================================
 
-// Function to run on core 0
-void Task0(void *pvParameters) {
-  while (true) {
-    Serial.println("Hello from core 0");
-    delay(1000); // Delay for 1 second
-  }
+// Broadcast message back to all clients
+void broadcast(std::string msg) {
+  noInterrupts();
+  webSocket.broadcastTXT(msg.c_str());
+  interrupts();
 }
 
-// Function to run on core 1
-void Task1(void *pvParameters) {
+unsigned long lastStatusMessageTime = 0;
+
+// Task to run on core 1
+void core1Task(void *pvParameters) {
   while (true) {
-    Serial.println("Hello from core 1");
-    delay(2000); // Delay for 2 seconds
+    // Send the WS messages. Can only send messages on intervals
+    if (millis() - lastStatusMessageTime > 50) { 
+
+      // Encoder messages  
+      if (robot._leftMotor.encoder.updated()) {
+        auto leftjsonMsg = wsMsgProcessor.makeEncoderMessage(0, robot._leftMotor.encoder.getTicks());
+        broadcast(leftjsonMsg);
+      }
+      if (robot._rightMotor.encoder.updated()) {  
+        auto rightjsonMsg = wsMsgProcessor.makeEncoderMessage(1, robot._rightMotor.encoder.getTicks() * -1);
+        broadcast(rightjsonMsg);
+      }
+
+      // Gyro messages
+      imu.update();
+      auto gyroJsonMsg = wsMsgProcessor.makeGyroMessage(imu.getRates(), imu.getAngles());
+      broadcast(gyroJsonMsg);
+
+      lastStatusMessageTime = millis();
+    } 
+    
+    // Yield to allow other tasks to run
+    delay(10);
   }
 }
 
@@ -183,29 +200,17 @@ void setup() {
   // Diagnostic test for I2C connectivity
   // i2cScan();
 
-  // Create a task to run on core 0
-  xTaskCreatePinnedToCore(
-    Task0,          // Task function
-    "Task0",        // Name of task
-    10000,          // Stack size of task
-    NULL,           // Parameter of the task
-    1,              // Priority of the task
-    NULL,           // Task handle
-    0);             // Core where the task should run
-
-  // Create a task to run on core 1
-  xTaskCreatePinnedToCore(
-    Task1,          // Task function
-    "Task1",        // Name of task
-    10000,          // Stack size of task
-    NULL,           // Parameter of the task
-    1,              // Priority of the task
-    NULL,           // Task handle
-    1);   
+  // Create task for core 1
+  // xTaskCreatePinnedToCore(
+  //   core1Task,     // Task function
+  //   "Core1Task",   // Name of task
+  //   10000,         // Stack size of task
+  //   NULL,          // Parameter of the task
+  //   1,             // Priority of the task
+  //   NULL,          // Task handle
+  //   1);            // Core where the task should run
 
 }
-
-unsigned long lastStatusMessageTime = 0;
 
 // Main (CORE0) Loop
 // This core should process WS messages and update the robot accordingly
@@ -216,24 +221,24 @@ void loop() {
   // webServer.handleClient();
   webSocket.loop();
 
-  // Send the WS messages. Can only send messages on intervals
-  if (millis() - lastStatusMessageTime > 50) { 
+  // // Send the WS messages. Can only send messages on intervals
+  // if (millis() - lastStatusMessageTime > 50) { 
 
-    // Encoder messages  
-    if (robot._leftMotor.encoder.updated()) {
-      auto leftjsonMsg = wsMsgProcessor.makeEncoderMessage(0, robot._leftMotor.encoder.getTicks());
-      broadcast(leftjsonMsg);
-    }
-    if (robot._rightMotor.encoder.updated()) {  
-      auto rightjsonMsg = wsMsgProcessor.makeEncoderMessage(1, robot._rightMotor.encoder.getTicks() * -1);
-      broadcast(rightjsonMsg);
-    }
+  //   // Encoder messages  
+  //   if (robot._leftMotor.encoder.updated()) {
+  //     auto leftjsonMsg = wsMsgProcessor.makeEncoderMessage(0, robot._leftMotor.encoder.getTicks());
+  //     broadcast(leftjsonMsg);
+  //   }
+  //   if (robot._rightMotor.encoder.updated()) {  
+  //     auto rightjsonMsg = wsMsgProcessor.makeEncoderMessage(1, robot._rightMotor.encoder.getTicks() * -1);
+  //     broadcast(rightjsonMsg);
+  //   }
 
-    // Gyro messages
-    imu.update();
-    auto gyroJsonMsg = wsMsgProcessor.makeGyroMessage(imu.getRates(), imu.getAngles());
-    broadcast(gyroJsonMsg);
+  //   // Gyro messages
+  //   imu.update();
+  //   auto gyroJsonMsg = wsMsgProcessor.makeGyroMessage(imu.getRates(), imu.getAngles());
+  //   broadcast(gyroJsonMsg);
 
-    lastStatusMessageTime = millis();
-  }
+  //   lastStatusMessageTime = millis();
+  // }
 }

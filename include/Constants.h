@@ -28,8 +28,8 @@ static struct L298NMotorPins {
   const byte motorDir2; // motor direction pin2
   const byte enable; // Enable PMW 
   const byte encoder; // Wheel encoder
-} motorPinGroupL298N[2] = {39, 38, 37, 7,
-                          40, 41, 42, 6};
+} motorPinGroupL298N[2] = {18, 17, 16, 11,
+                          15, 7, 6, 12};
 
 // #define HELTEC_WIFI_KIT_32 false
 // -------------------------------------------------------//
