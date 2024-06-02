@@ -42,37 +42,13 @@ class MotorL298N
     // void setSpeed(const float wheelSpeed, 
     //               const int timeOut);              
 
-    void init() {}
+    void init();
     
     void applyPower(DutyCycle speed);
 
-    // /**
-    //  * Is the motor currently running
-    //  * 
-    //  * @return true/false - The running status of the motor
-    //  */
-    // bool isRunning() { return PWM_ > 0; }
-
-    // /**
-    //  * Returns the current PWM value for this motor.
-    //  */
-    // int getPWM() const {return PWM_;}
-
-    // /**
-    //  * Returns the current total number pulses.
-    //  */
-    // int32_t getPulses() const {return encoder.pulses;}
-
-    // /**
-    //  * Returns the current total number pulses per second.
-    //  */
-    // int32_t getCurrentPulsesPerSecond() const {return currentPulsesPerSec_;}
-
-    // /**
-    //  * Returns the current number of pulses per second.
-    //  */
-    // int32_t getAvgPulsesPerSecond() const {return avgPulsesPerSec_;}
-
+    void printPort() {
+      Serial.print("Port ");Serial.print(encoderPinGroup[pinGroup_].encoderA);
+    }
   private:
     
     // Variables added lesson 1

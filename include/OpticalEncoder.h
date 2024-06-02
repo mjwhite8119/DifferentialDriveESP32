@@ -2,6 +2,7 @@
 
 #include "Arduino.h"
 #include "Constants.h"
+#include <iostream>
 
 #define STOPPED 2
 #define FORWARD 0
@@ -41,7 +42,13 @@ class OpticalEncoder
      */
     void resetEncoder() {ticks = 0;}
 
+    void init();
+
     bool updated();
+
+    void printPort() {
+      Serial.print("Port ");Serial.print(motorPinGroupL298N[pinGroup_].encoder);
+    }
 
     int32_t IRAM_ATTR getTicks();
 

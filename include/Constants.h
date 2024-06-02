@@ -20,7 +20,7 @@ static struct DRAM_ATTR MotorPins {
 static struct DRAM_ATTR EncoderPins {
   const byte encoderA; 
   const byte encoderB; 
-} encoderPinGroup[1] = {8, 7};
+} encoderPinGroup[1] = {6, 7};
 
 // Pins for the L298N motor driver with optical encoders
 static struct L298NMotorPins {
@@ -28,8 +28,8 @@ static struct L298NMotorPins {
   const byte motorDir2; // motor direction pin2
   const byte enable; // Enable PMW 
   const byte encoder; // Wheel encoder
-} motorPinGroupL298N[2] = {18, 17, 16, 11,
-                          15, 7, 5, 10};
+} motorPinGroupL298N[2] = {39, 38, 37, 7,
+                          40, 41, 42, 6};
 
 // #define HELTEC_WIFI_KIT_32 false
 // -------------------------------------------------------//

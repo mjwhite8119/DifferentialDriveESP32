@@ -194,6 +194,8 @@ void setup() {
   // Set up the webServer on robot
   setupWebServer();
 
+  robot.init();
+
   // Set up the webSocket on robot
   // setupWebSocket();
 

@@ -6,13 +6,16 @@ namespace xrp {
       _enabled(false),
       _leftMotor(0), // Pin group of Motor
       _rightMotor(1) // Pin group of Motor
-      {
-      std::cout << "Robot Constructor called." << std::endl;
-      _leftMotor.init();
-      _rightMotor.init();
+  {
+    std::cout << "Robot Constructor called." << std::endl;    
 
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWrite(LED_BUILTIN, LOW);
+  }
+
+  void Robot::init() {
+    _leftMotor.init();
+    _rightMotor.init();
   }
 
   void Robot::configureDIO(int deviceId, bool isInput) {

@@ -25,30 +25,13 @@ MotorL298N::MotorL298N(const uint8_t pinGroup)
 
   // Make sure motor is off
   ledcWrite(pinGroup_, 0);
+}
 
-  // // Start motor power timers 
-  // switch (pinGroup)
-  // {
-  // case 0: 
-  //   {
-  //     const esp_timer_create_args_t periodic_timer_args = {.callback = &motorISR0};
-  //     esp_timer_create(&periodic_timer_args, &motorTimer0);
-  //     esp_timer_start_periodic(motorTimer0, speedCtrlPeriodMicros); // Time in milliseconds (100)
-  //     instances [0] = this; 
-  //   }
-  //   break;
-    
-  // case 1: 
-  //   {
-  //     const esp_timer_create_args_t periodic_timer_args = {.callback = &motorISR1};
-  //     esp_timer_create(&periodic_timer_args, &motorTimer1);
-  //     esp_timer_start_periodic(motorTimer1, speedCtrlPeriodMicros); // Time in milliseconds (100)
-  //     instances [1] = this;
-  //   }
-  //   break;
-    
-  // } // end of switch
+void MotorL298N::init() {
+  encoder.init();
 
+  encoder.resetEncoder();
+  Serial.print("Encoder "); encoder.printPort(); Serial.println("");
 }
 
 // ---------------- Public member methods -------------------------

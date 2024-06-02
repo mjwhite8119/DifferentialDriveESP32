@@ -25,6 +25,8 @@ namespace xrp {
     public:
       Robot();
 
+      void init();
+      
       void configureEncoder(int deviceId, int chA, int chB);
       void configureDIO(int deviceId, bool isInput);
 
