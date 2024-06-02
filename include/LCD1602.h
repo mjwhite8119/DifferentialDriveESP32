@@ -75,6 +75,7 @@ inline void drawDSConnect(bool connected, int row=0) {
     drawText(14, row, "DS");
   } else {
     drawText(14, row, "  ");
+    drawText(0, row+1, "                ");
   }
 }
 

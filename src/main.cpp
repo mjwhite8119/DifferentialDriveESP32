@@ -8,8 +8,6 @@
 #include <WebSocketsServer.h>
 #include <ArduinoJson.h>
 
-#include "RobotWebServer.h"
-
 #include <vector>
 
 #include "OTA32.h"
@@ -19,16 +17,8 @@
 #include "wpilibws_processor.h"
 #include "watchdog.h"
 
-
-// Resource strings
-extern "C" {
-const unsigned char* GetResource_index_html(size_t* len);
-const unsigned char* GetResource_normalize_css(size_t* len);
-const unsigned char* GetResource_skeleton_css(size_t* len);
-const unsigned char* GetResource_xrp_js(size_t* len);
-}
-
-// XRPConfiguration config;
+#include "RobotWebServer.h"
+// #include "RobotWebSocket.h"
 
 wpilibws::WPILibWSProcessor wsMsgProcessor;
 
@@ -45,7 +35,16 @@ xrp::Watchdog dsWatchdog{"ds"};
 // Chip Identifier
 char chipID[20];
 
-WebSocketsServer webSocket = WebSocketsServer(3300, "/wpilibws");
+// // Reconnection variables
+// const int maxReconnectAttempts = 10;
+// int reconnectAttempts = 0;
+// const int reconnectInterval = 5000; // 5 seconds
+// WebSocket server URL and port
+const char* wsServer = "/wpilibws"; 
+const int wsPort = 3300;
+WebSocketsServer webSocket = WebSocketsServer(wsPort, wsServer);
+// AsyncWebServer server(wsPort);
+// AsyncWebSocket webSocket(wsServer);
 
 // ===================================================
 // Handlers for INBOUND WS Messages
@@ -183,7 +182,7 @@ void setup() {
     delay(1000); 
   }
 
-  // Set up WebSocket messages
+  // // Set up WebSocket messages
   hookupWSMessageHandlers();
 
   webSocket.onEvent(onWebSocketEvent);
@@ -192,10 +191,11 @@ void setup() {
   Serial.println("WebSocket server started on /wpilibws on port 3300");
   Serial.printf("IP Address: %s\n", WiFi.localIP().toString().c_str());
   
-  // Set up the webserver on robot
-  setupRobotWebServer();
+  // Set up the webServer on robot
+  setupWebServer();
 
-  Serial.println("HTTP Server started on port 3300");
+  // Set up the webSocket on robot
+  // setupWebSocket();
 
   // Diagnostic test for I2C connectivity
   // i2cScan();
@@ -218,8 +218,19 @@ void loop() {
   // Robot Status
   robot.checkStatus();
 
+  // Process WebSocket events
+  // webSocket.cleanupClients();
+
   // webServer.handleClient();
   webSocket.loop();
+
+  // Attempt to reconnect if disconnected
+  // if (!webSocket.clientIsConnected() && reconnectAttempts < maxReconnectAttempts) {
+  //   Serial.println("Reconnecting to WebSocket...");
+  //   webSocket.begin();
+  //   reconnectAttempts++;
+  //   delay(reconnectInterval);
+  // }
 
   // // Send the WS messages. Can only send messages on intervals
   // if (millis() - lastStatusMessageTime > 50) { 

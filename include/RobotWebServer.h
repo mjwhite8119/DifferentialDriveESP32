@@ -38,7 +38,7 @@ void notFound(AsyncWebServerRequest *request) {
     request->send(404, "text/plain", "Not found");
 }
 
-void setupRobotWebServer() {
+void setupWebServer() {
     // Set up the web server and websocket server hooks
   setupWebServerRoutes();
 

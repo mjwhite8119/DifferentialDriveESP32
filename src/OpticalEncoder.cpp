@@ -9,12 +9,14 @@ OpticalEncoder * OpticalEncoder::instances [2] = { NULL, NULL };
 OpticalEncoder::OpticalEncoder(uint8_t pinGroup) 
   :pinGroup_(pinGroup)
 {   
+
+  Serial.printf("OpticalEncoder constructor called pinGroup :%i ", pinGroup);
   // Connect encoder to GPIO pins
-  pinMode(motorPinGroupL298N[pinGroup].encoder, INPUT); //  Left encoder, channel A
+  pinMode(motorPinGroupL298N[pinGroup].encoder, INPUT); 
   digitalWrite(motorPinGroupL298N[pinGroup].encoder, HIGH); // turn on pullup resistors
 
   // Attach interrupts
-  switch (pinGroup)
+  switch (pinGroup_)
   {
   case 0: 
     attachInterrupt (motorPinGroupL298N[0].encoder, encoderISR0, RISING);  // Left encoder
