@@ -20,7 +20,7 @@ void broadcast(std::string msg) {
 }
 
 void onWebSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t length) {
-  // Serial.println("got request");
+  
   switch (type) {
     case WStype_DISCONNECTED:
       Serial.printf("[%u] Disconnected\n", num);

@@ -17,8 +17,7 @@
 
 #include "RobotWebServer.h"
 #include "RobotWebSocket.h"
-
-// wpilibws::WPILibWSProcessor wsMsgProcessor;
+// #include "RobotAsyncWebSocket.h"
 
 xrp::Robot robot;
 
@@ -165,27 +164,6 @@ void loop() {
   // Robot Status
   robot.checkStatus();
 
-  // webServer.handleClient();
+  // Process websocket events
   loopWebSocket();
-
-  // Send the WS messages. Can only send messages on intervals
-  // if (millis() - lastStatusMessageTime > 50) { 
-
-  //   // Encoder messages  
-  //   if (robot._leftMotor.encoder.updated()) {
-  //     auto leftjsonMsg = wsMsgProcessor.makeEncoderMessage(0, robot._leftMotor.encoder.getTicks());
-  //     broadcast(leftjsonMsg);
-  //   }
-  //   if (robot._rightMotor.encoder.updated()) {  
-  //     auto rightjsonMsg = wsMsgProcessor.makeEncoderMessage(1, robot._rightMotor.encoder.getTicks() * -1);
-  //     broadcast(rightjsonMsg);
-  //   }
-
-  //   // Gyro messages
-  //   imu.update();
-  //   auto gyroJsonMsg = wsMsgProcessor.makeGyroMessage(imu.getRates(), imu.getAngles());
-  //   broadcast(gyroJsonMsg);
-
-  //   lastStatusMessageTime = millis();
-  // }
 }
