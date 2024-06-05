@@ -52,7 +52,7 @@ void MotorL298N::applyPower(DutyCycle speed) {
 
   // Convert from dutyCycle speed to PWM
   // Don't try and move unless we have at least 50 PWM
-  const int PWM = mapFloatToInt(abs(speed), 0.0, 1.0, 125, MAX_DUTY_CYCLE);
+  const int PWM = mapFloatToInt(abs(speed), 0.0, 1.0, 150, MAX_DUTY_CYCLE);
   // Serial.print(" Speed=");Serial.print(speed);Serial.print(" PWM=");Serial.println(PWM);
 
   if (speed == 0) {
