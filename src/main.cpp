@@ -34,8 +34,10 @@ char chipID[20];
 // ===================================================
 void onDSGenericMessage() {
   // We use the DS messages to feed the watchdog
+  // Serial.print("Feed robot watchdog");
   robot.watchdog.feed();
-  dsWatchdog.feed();
+  // Serial.println("Feed ds watchdog");
+  // dsWatchdog.feed();
 }
 
 void onDSEnabledMessage(bool enabled) {

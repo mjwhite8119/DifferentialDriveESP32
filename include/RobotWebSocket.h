@@ -9,6 +9,11 @@ const char* wsServer = "/wpilibws";
 const int wsPort = 3300;
 WebSocketsServer webSocket = WebSocketsServer(wsPort, wsServer);
 
+// Reconnection variables
+const int maxReconnectAttempts = 10;
+int reconnectAttempts = 0;
+const int reconnectInterval = 5000; // 5 seconds
+
 wpilibws::WPILibWSProcessor wsMsgProcessor;
 
 // ===================================================

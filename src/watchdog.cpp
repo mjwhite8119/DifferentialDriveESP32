@@ -7,9 +7,11 @@
 namespace xrp {
   void Watchdog::feed() {
     if (!_lastSatisfiedState) {
-      // Transitioned from false -> true
-      Serial.printf("[WD:%s - Sat] F -> T\n", _name.c_str());
+      // Transitioned to Simulator connected
+      Serial.printf("[WD:%s - Feed] Simulator connected.\n", _name.c_str());
       drawDSConnect(true);
+    } else {
+      // Serial.print(_lastWatchdogFeedTime);
     }
     _lastSatisfiedState = true;
     _lastWatchdogFeedTime = millis();
@@ -19,8 +21,8 @@ namespace xrp {
 
     if (_watchdogTimeout == 0) {
       if (!_lastSatisfiedState) {
-        // Transitioned from false -> true
-        Serial.printf("[WD:%s - Sat] F -> T\n", _name.c_str());
+        // Transitioned to Simulator connected
+        Serial.printf("[WD:%s - Sat] Simulator connected.\n", _name.c_str());
         drawDSConnect(true);
       }
       _lastSatisfiedState = true;
@@ -29,8 +31,8 @@ namespace xrp {
 
     if (millis() - _lastWatchdogFeedTime < _watchdogTimeout) {
       if (!_lastSatisfiedState) {
-        // Transitioned from false -> true. Initially after 1 second
-        Serial.printf("[WD:%s - Sat] F -> T\n", _name.c_str());
+        // Transitioned to Simulator connected. Initially after 1 second
+        Serial.printf("[WD:%s - Sat] Simulator connected. After 1 second\n", _name.c_str());
         drawDSConnect(true);
       }
       _lastSatisfiedState = true;
@@ -38,7 +40,7 @@ namespace xrp {
     }
 
     if (_lastSatisfiedState) {
-      Serial.printf("[WD:%s - Sat] T -> F\n", _name.c_str());
+      Serial.printf("[WD:%s - Sat] Simulator Disconnected!!!\n", _name.c_str());
       drawDSConnect(false);
     }
     _lastSatisfiedState = false;
